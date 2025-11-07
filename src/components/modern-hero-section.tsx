@@ -158,7 +158,7 @@ export const HeroCollage = React.forwardRef<HTMLDivElement, HeroCollageProps>(
             <div className="flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-16">
               {stats.map((stat, index) => (
                 <div key={index} className="text-center">
-                  <p className={`text-4xl font-bold tracking-tight ${dark ? 'text-blue-400' : 'text-blue-600'}`}>
+                  <p className={`text-4xl font-bold tracking-tight ${dark ? 'text-neutral-400' : 'text-neutral-600'}`}>
                     {stat.value}
                   </p>
                   <p className={`mt-1 text-sm font-medium ${dark ? 'text-gray-300' : 'text-muted-foreground'}`}>
