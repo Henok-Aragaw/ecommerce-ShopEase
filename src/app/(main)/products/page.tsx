@@ -44,6 +44,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductsList() {
   const dark = useSelector((state: RootState) => state.theme.dark);
@@ -62,7 +63,7 @@ export default function ProductsList() {
   });
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isError } = useProducts(query);
+  const { data, fetchNextPage, hasNextPage, isError, isLoading } = useProducts(query);
   const createProductMutation = useCreateProduct();
 
   const allProducts: Product[] = data?.pages.flatMap((page) => page.products) || [];
@@ -100,6 +101,29 @@ export default function ProductsList() {
     }
     toast.success(`Deleted "${product.title}"`);
     setProductToDelete(null);
+  };
+
+
+  const renderSkeletons = (count: number) => {
+    return Array.from({ length: count }).map((_, id) => (
+      <Card key={id} className={`overflow-hidden flex flex-col h-full animate-pulse ${dark ? "bg-neutral-900" : "bg-gray-100"}`}>
+        <CardHeader className="p-0">
+          <Skeleton className="h-40 w-full" />
+        </CardHeader>
+        <div className="p-6 flex-1 flex flex-col">
+          <Skeleton className="h-6 w-3/4 mb-2" />
+          <Skeleton className="h-4 w-1/2 mb-2" />
+          <CardContent className="p-0 pt-4 flex-grow">
+            <Skeleton className="h-4 w-full mb-1" />
+            <Skeleton className="h-4 w-full" />
+          </CardContent>
+          <CardFooter className="p-0 pt-4 flex justify-between items-center mt-auto">
+            <Skeleton className="h-6 w-16" />
+            <Skeleton className="h-5 w-12" />
+          </CardFooter>
+        </div>
+      </Card>
+    ));
   };
 
   return (
@@ -194,24 +218,36 @@ export default function ProductsList() {
           </Dialog>
         </div>
 
-        {isError || displayedProducts.length === 0 ? (
+        {isError ? (
           <div
             className={`flex items-center justify-center text-center py-20 rounded-lg ${
               dark ? "bg-neutral-900 text-gray-300" : "bg-gray-50 text-gray-700"
             }`}
           >
-            {isError ? (
-              <p>⚠️ Failed to load products. Try again later.</p>
-            ) : (
-              <p>No products found.</p>
-            )}
+            <p>⚠️ Failed to load products. Try again later.</p>
+          </div>
+        ) : isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {renderSkeletons(8)}
+          </div>
+        ) : displayedProducts.length === 0 ? (
+          <div
+            className={`flex items-center justify-center text-center py-20 rounded-lg ${
+              dark ? "bg-neutral-900 text-gray-300" : "bg-gray-50 text-gray-700"
+            }`}
+          >
+            <p>No products found.</p>
           </div>
         ) : (
           <InfiniteScroll
             dataLength={displayedProducts.length}
             next={fetchNextPage}
             hasMore={!!hasNextPage}
-            loader={<p className="text-center py-4">Loading more products...</p>}
+            loader={
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+                {renderSkeletons(4)}
+              </div>
+            }
             endMessage={
               <p className="text-center py-4 text-gray-500">
                 No more products
@@ -314,10 +350,6 @@ export default function ProductsList() {
               ))}
             </div>
           </InfiniteScroll>
-        )}
-
-        {isFetchingNextPage && displayedProducts.length === 0 && (
-          <p className="text-center py-4">Loading products...</p>
         )}
       </div>
     </div>
