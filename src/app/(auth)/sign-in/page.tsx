@@ -147,7 +147,7 @@ const LoginPage: React.FC = () => {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full pt-6 pb-6 text-base cursor-pointer ${dark ? "bg-neutral-700 text-white hover:bg-neutral-600" : "bg-blue-600 text-white hover:bg-blue-700"}`}
+              className={`w-full pt-6 pb-6 text-base cursor-pointer ${dark ? "bg-neutral-700 text-white hover:bg-neutral-600" : "bg-neutral-600 text-white hover:bg-neutral-700"}`}
             >
               {isSubmitting ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />Signing in...</> : "Sign In"}
             </Button>
