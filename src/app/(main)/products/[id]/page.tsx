@@ -75,6 +75,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
     );
   }
 
+  // Skeleton loading
   if (isLoading || !product) {
     return (
       <div
@@ -83,7 +84,14 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
         }`}
       >
         <Skeleton className="w-full h-[450px] rounded-lg" />
-        <Skeleton className="h-10 w-3/4" />
+        <div className="flex flex-col gap-4">
+          <Skeleton className="h-6 w-1/3 rounded" />
+          <Skeleton className="h-10 w-3/4 rounded" />
+          <Skeleton className="h-6 w-1/2 rounded" />
+          <Skeleton className="h-8 w-1/3 rounded" />
+          <Skeleton className="h-6 w-full rounded" />
+          <Skeleton className="h-12 w-full rounded" />
+        </div>
       </div>
     );
   }
@@ -150,7 +158,6 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
 
   return (
     <div className={`${dark ? "bg-black text-white" : "bg-white text-gray-900"}`}>
-    
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-6">
         <nav
           className="flex items-center text-sm flex-wrap gap-2"
@@ -177,7 +184,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
               className={`transition-colors capitalize ${
                 dark
                   ? "text-gray-300 hover:text-white"
-                  : "hover:text-indigo-600"
+                  : "hover:text-neutral-600"
               }`}
             >
               {product?.category ?? "Category"}
@@ -200,7 +207,6 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-       
         <div className="flex justify-end mb-4 pt-12">
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -218,7 +224,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
             </DialogTrigger>
 
             <DialogContent
-              className={`sm:max-w-lg rounded-2xl border ${
+              className={`sm:max-w-lg w-full max-h-[90vh] overflow-y-auto rounded-2xl border p-6 ${
                 dark
                   ? "bg-neutral-900 border-gray-700 text-white"
                   : "bg-white border-gray-200 text-gray-900"
@@ -304,7 +310,6 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
           </Dialog>
         </div>
 
-        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
           {/* Images */}
           <div className="flex flex-col gap-4">
@@ -345,7 +350,6 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
             )}
           </div>
 
-          
           <div className="flex flex-col gap-6">
             <div>
               <p
@@ -363,7 +367,6 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
                 {product.title}
               </h1>
 
-              
               <div className="flex items-center mt-3">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => {
@@ -392,7 +395,6 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
                 </p>
               </div>
 
-              
               <div className="flex items-baseline gap-3 mt-2">
                 <p
                   className={`text-4xl font-bold ${
