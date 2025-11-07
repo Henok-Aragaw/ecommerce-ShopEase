@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-const getInitialTheme = () => {
-  if (typeof window !== 'undefined') {
-    const saved = localStorage.getItem('theme-dark')
-    return saved ? JSON.parse(saved) : false
-  }
-  return false
+interface ThemeState {
+  dark: boolean
+}
+
+const initialState: ThemeState = {
+  dark: false,
 }
 
 const themeSlice = createSlice({
   name: 'theme',
-  initialState: { dark: getInitialTheme() },
+  initialState,
   reducers: {
     toggleTheme(state) {
       state.dark = !state.dark
