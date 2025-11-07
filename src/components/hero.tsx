@@ -29,7 +29,7 @@ export default function HeroSection() {
         title={
           <div className={dark ? "text-white" : ""}>
             Elevate Your{" "}
-            <span className={dark ? "text-blue-400" : "text-blue-600"}>Shopping Experience</span>
+            <span className={dark ? "text-neutral-400" : "text-neutral-600"}>Shopping Experience</span>
           </div>
         }
         subtitle={
@@ -40,7 +40,7 @@ export default function HeroSection() {
             <div className="mt-8 flex justify-center gap-4">
               <Button
                 size="lg"
-                className={dark ? "bg-blue-400 text-black hover:bg-blue-300" : "bg-blue-600 text-white hover:bg-blue-700"}
+                className={dark ? "bg-neutral-400 text-black hover:bg-neutral-300" : "bg-neutral-600 text-white hover:bg-neutral-700"}
               >
                 <Link
                  href={"/products"}
