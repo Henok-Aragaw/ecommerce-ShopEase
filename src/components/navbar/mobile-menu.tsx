@@ -15,6 +15,7 @@ import {
 import { Heart } from "lucide-react";
 import { Product } from "@/types/product";
 import { ThemeToggle } from "./theme-toggle";
+import Image from "next/image";
 
 interface Props {
   dark: boolean;
@@ -104,7 +105,7 @@ export const MobileMenu: React.FC<Props> = ({ dark, menuOpen, setMenuOpen }) => 
                       }`}
                       onClick={() => setMenuOpen(false)}
                     >
-                      <img
+                      <Image
                         src={item.thumbnail!}
                         alt={item.title}
                         className="w-12 h-12 rounded-md object-cover"
