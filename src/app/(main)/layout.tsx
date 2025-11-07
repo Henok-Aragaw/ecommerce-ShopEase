@@ -1,4 +1,4 @@
-import Navbar from '@/components/nav-bar'
+import Navbar from '@/components/navbar/nav-bar'
 
 import { ReactNode } from 'react'
 
