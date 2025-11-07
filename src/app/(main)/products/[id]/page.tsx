@@ -325,9 +325,9 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
             </div>
             {product.images && product.images.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2">
-                {product.images.map((img, idx) => (
+                {product.images.map((img, id) => (
                   <div
-                    key={idx}
+                    key={id}
                     className={`w-24 h-24 rounded-md cursor-pointer overflow-hidden border-2 ${
                       mainImage === img
                         ? "border-neutral-500"
@@ -339,7 +339,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
                   >
                     <Image
                       src={img}
-                      alt={`${product.title} ${idx + 1}`}
+                      alt={`${product.title} ${id + 1}`}
                       width={100}
                       height={100}
                       className="w-full h-full object-cover"
