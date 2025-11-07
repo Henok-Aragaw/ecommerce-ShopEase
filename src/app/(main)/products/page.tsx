@@ -43,6 +43,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
 
 export default function ProductsList() {
   const dark = useSelector((state: RootState) => state.theme.dark);
@@ -220,7 +221,7 @@ export default function ProductsList() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {displayedProducts.map((product) => (
                 <div key={product.id} className="relative group">
-                  
+
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <button
@@ -277,8 +278,10 @@ export default function ProductsList() {
                     >
                       <CardHeader className="p-0">
                         <div className="relative h-40 w-full">
-                          <img
-                            src={product.thumbnail}
+                          <Image
+                            src={product.thumbnail!}
+                            width={400}
+                            height={400}
                             alt={product.title}
                             className="w-full h-full object-cover rounded-t-md"
                           />

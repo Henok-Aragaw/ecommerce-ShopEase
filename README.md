@@ -43,6 +43,12 @@ A modern eCommerce web application** built with **Next.js App Router**, **TypeSc
 - Favorites state persisted locally for reliability
 - Real-time badge count on Navbar
 
+### 🎨 Hero Section (Interactive)
+- Built as **`Hero.tsx`** and **`ModernHeroSection.tsx`** components
+- Features a clean, responsive design with call-to-action elements
+- **Supports drag-and-drop image interaction** for a dynamic, hands-on user experience
+- Adjusts visuals automatically based on the app’s dark/light theme
+
 ### ➕ Create Product
 - Simple form with fields: `title`, `description`, `price`, `stock`, `brand`, `category`
 - Uses **UUID** to generate fake local product IDs
@@ -146,6 +152,7 @@ src/
 - **Shadcn UI + Tailwind CSS** create a clean, responsive interface  
 - **Lucide Icons** add modern, consistent iconography  
 - **Sonner** provides smooth toast notifications
+- **Drag-and-drop** image interactions make the Hero section feel alive
 
 ---
 
@@ -159,6 +166,7 @@ src/
 - Theme toggling via Redux and persisted state
 - Dialogs and drawers powered by **Shadcn UI**
 - Type-safe development with **TypeScript**
+- Interactive **drag-and-drop Hero section**
 
 ---
 
