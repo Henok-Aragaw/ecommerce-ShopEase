@@ -3,9 +3,10 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store";
-import { ShoppingBag, Search, Heart, Menu, X } from "lucide-react";
+import { logout } from "@/store/slices/authSlice";
+import { ShoppingBag, Search, Heart, Menu, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   SheetClose,
@@ -18,10 +19,15 @@ import {
 import { SearchDropdown } from "./search-dropdown";
 import { MobileMenu } from "./mobile-menu";
 import { Product } from "@/types/product";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
+  const dispatch = useDispatch();
+  const router = useRouter();
+
   const dark = useSelector((state: RootState) => state.theme.dark);
   const favorites = useSelector((state: RootState) => state.favorites.items);
+  const auth = useSelector((state: RootState) => state.auth);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -55,6 +61,12 @@ export default function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // handle logout
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push("/sign-in");
+  };
 
   return (
     <nav
@@ -140,7 +152,7 @@ export default function Navbar() {
               <div className="mt-4 space-y-4 overflow-y-auto max-h-[75vh]">
                 {Object.values(favorites).length === 0 ? (
                   <p className="text-gray-500 text-center mt-10">
-                    No favorites yet ❤️
+                    No favorites yet
                   </p>
                 ) : (
                   Object.values(favorites).map((item: Product) => (
@@ -168,18 +180,37 @@ export default function Navbar() {
             </SheetContent>
           </Sheet>
 
-          {/* Sign In */}
-          <Link href="/login">
-            <Button
-              className={`font-medium ${
-                dark
-                  ? "bg-white text-black hover:bg-gray-200"
-                  : "bg-black text-white hover:bg-gray-800"
-              }`}
-            >
-              Sign In
-            </Button>
-          </Link>
+          {/* Auth Buttons */}
+          {auth.token ? (
+            <div className="flex items-center gap-2">
+              <span
+                className={`text-sm font-medium ${
+                  dark ? "text-gray-300" : "text-gray-700"
+                }`}
+              >
+                Hi, {auth.user?.name || "User"}
+              </span>
+              <Button
+                variant="outline"
+                onClick={handleLogout}
+                className="flex items-center gap-1"
+              >
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <Link href="/sign-in">
+              <Button
+                className={`font-medium ${
+                  dark
+                    ? "bg-white text-black hover:bg-gray-200"
+                    : "bg-black text-white hover:bg-gray-800"
+                }`}
+              >
+                Sign In
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Mobile Hamburger & Search */}
@@ -210,7 +241,7 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      <MobileMenu dark={dark} menuOpen={menuOpen} />
+      <MobileMenu setMenuOpen={setMenuOpen} dark={dark} menuOpen={menuOpen} />
 
       {/* Search Dropdown */}
       {searchOpen && (
