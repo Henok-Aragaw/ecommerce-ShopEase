@@ -1,14 +1,19 @@
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/axios';
-import type { Product } from '@/types/product';
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/axios";
+import type { Product } from "@/types/product";
 
-export const useProduct = (id?: string | number) => {
+// Pass localProducts so we can check locally added products first
+export const useProduct = (id?: string | number, localProducts: Product[] = []) => {
   return useQuery<Product, Error>({
-    queryKey: ['product', id],
+    queryKey: ["product", id],
     queryFn: async (): Promise<Product> => {
-      if (!id) throw new Error('Product ID is required');
+      if (!id) throw new Error("Product ID is required");
 
-      // api interceptor returns res.data, so the call resolves to the product object
+      // Check localProducts first
+      const localProduct = localProducts.find((p) => p.id?.toString() === id?.toString());
+      if (localProduct) return localProduct;
+
+      // Otherwise fetch from DummyJSON
       const res = await api.get(`/products/${id}`);
       return res as unknown as Product;
     },

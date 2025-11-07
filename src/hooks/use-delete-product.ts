@@ -7,10 +7,9 @@ export const useDeleteProduct = () => {
   return useMutation({
     mutationFn: async (id: number) => {
       const res = await api.delete(`/products/${id}`);
-      return res; 
+      return res;
     },
     onSuccess: () => {
-      
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
     onError: (error) => {

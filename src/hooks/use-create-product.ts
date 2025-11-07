@@ -5,13 +5,21 @@ import type { Product } from "@/types/product";
 export const useCreateProduct = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<Product, Error, Product>({
     mutationFn: async (payload: Product) => {
-      const { data } = await api.post<Product>("/products/add", payload);
-      return data;
+      try {
+       
+        const response = await api.post("/products/add", payload);
+
+        return {
+          ...payload,
+          id: response?.data?.id,
+        } as Product;
+      } catch (error) {
+        throw error;
+      }
     },
     onSuccess: () => {
-      
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
   });

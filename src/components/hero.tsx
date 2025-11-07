@@ -4,6 +4,7 @@ import { HeroCollage } from "./modern-hero-section";
 import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import Link from "next/link";
 
 export default function HeroSection() {
   const dark = useSelector((state: RootState) => state.theme.dark);
@@ -41,14 +42,11 @@ export default function HeroSection() {
                 size="lg"
                 className={dark ? "bg-blue-400 text-black hover:bg-blue-300" : "bg-blue-600 text-white hover:bg-blue-700"}
               >
-                Shop Now
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                className={dark ? "border-white text-white hover:bg-white/10" : ""}
-              >
-                Learn More
+                <Link
+                 href={"/products"}
+                >
+                 Shop Now
+                </Link>
               </Button>
             </div>
           </>

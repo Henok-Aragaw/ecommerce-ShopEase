@@ -4,7 +4,7 @@ import "./globals.css";
 import QueryProvider from "@/hooks/query-provider";
 import { Toaster } from "@/components/ui/sonner";
 import ReduxProvider from "@/components/providers/redux-provider";
-
+import ThemeProvider from "@/hooks/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +33,7 @@ export default function RootLayout({
       >
         <ReduxProvider>
           <QueryProvider>
+            <ThemeProvider />
             {children}
             <Toaster />
           </QueryProvider>
