@@ -18,7 +18,7 @@ const saveToStorage = (state: FavoritesState) => {
   try {
     localStorage.setItem("favorites", JSON.stringify(state));
   } catch {
-    // ignore
+    console.error("Failed to save favorites to localStorage");
   }
 };
 

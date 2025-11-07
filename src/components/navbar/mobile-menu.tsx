@@ -39,7 +39,7 @@ export const MobileMenu: React.FC<Props> = ({ dark, menuOpen, setMenuOpen }) => 
       } ${dark ? "bg-gray-950 border-t border-gray-800" : "bg-white border-t border-gray-200"}`}
     >
       <div className="px-4 py-4 space-y-4">
-        {/* Products Link */}
+       
         <Link
           href="/products"
           className={`block text-sm font-medium transition-all duration-300 py-2 px-3 rounded-lg ${
@@ -52,7 +52,7 @@ export const MobileMenu: React.FC<Props> = ({ dark, menuOpen, setMenuOpen }) => 
           Products
         </Link>
 
-        {/* Favorites Sheet */}
+       
         <Sheet>
           <SheetTrigger asChild>
             <Button
@@ -133,7 +133,7 @@ export const MobileMenu: React.FC<Props> = ({ dark, menuOpen, setMenuOpen }) => 
           </SheetContent>
         </Sheet>
 
-        {/* Auth Section */}
+        
         {auth.token ? (
           <div className="flex flex-col gap-2 mt-2">
             <span
@@ -170,7 +170,7 @@ export const MobileMenu: React.FC<Props> = ({ dark, menuOpen, setMenuOpen }) => 
           </Link>
         )}
 
-        {/* Theme Toggle */}
+       
         <div className="pt-2 border-t mt-2 border-gray-300 dark:border-gray-700">
           <ThemeToggle dark={dark} />
         </div>

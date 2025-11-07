@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { toast } from "sonner";
@@ -108,7 +108,7 @@ export default function ProductsList() {
       } transition-colors duration-300`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
-        {/* Header + Add Product */}
+
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <Input
             type="text"
@@ -193,7 +193,6 @@ export default function ProductsList() {
           </Dialog>
         </div>
 
-        {/* Empty or Error State */}
         {isError || displayedProducts.length === 0 ? (
           <div
             className={`flex items-center justify-center text-center py-20 rounded-lg ${
@@ -221,7 +220,7 @@ export default function ProductsList() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {displayedProducts.map((product) => (
                 <div key={product.id} className="relative group">
-                  {/* Delete Alert Dialog */}
+                  
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <button

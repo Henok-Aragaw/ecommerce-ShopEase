@@ -5,7 +5,6 @@ export interface Product {
     warrantyInformation: ReactNode
     availabilityStatus: ReactNode
     dimensions: { width: number; height: number; depth: number }
-    
     weight: ReactNode
     sku: ReactNode
     id?: number

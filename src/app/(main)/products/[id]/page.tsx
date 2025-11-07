@@ -150,7 +150,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
 
   return (
     <div className={`${dark ? "bg-black text-white" : "bg-white text-gray-900"}`}>
-      {/* Breadcrumb */}
+    
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-6">
         <nav
           className="flex items-center text-sm flex-wrap gap-2"
@@ -200,7 +200,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Edit Dialog */}
+       
         <div className="flex justify-end mb-4 pt-12">
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -304,7 +304,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
           </Dialog>
         </div>
 
-        {/* Product Display */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
           {/* Images */}
           <div className="flex flex-col gap-4">
@@ -345,7 +345,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
             )}
           </div>
 
-          {/* Product Info */}
+          
           <div className="flex flex-col gap-6">
             <div>
               <p
@@ -363,7 +363,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
                 {product.title}
               </h1>
 
-              {/* Rating */}
+              
               <div className="flex items-center mt-3">
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => {
@@ -392,7 +392,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
                 </p>
               </div>
 
-              {/* Price & Stock */}
+              
               <div className="flex items-baseline gap-3 mt-2">
                 <p
                   className={`text-4xl font-bold ${
@@ -424,7 +424,6 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
                 </p>
               </div>
 
-              {/* Description */}
               <p
                 className={`mt-2 ${
                   dark ? "text-gray-300" : "text-gray-600"
@@ -434,7 +433,6 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
               </p>
             </div>
 
-            {/* Favorite Button */}
             <div className="mt-6">
               <button
                 onClick={() => dispatch(toggleFavorite(product))}

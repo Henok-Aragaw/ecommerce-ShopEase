@@ -38,7 +38,7 @@ export const SearchDropdown: React.FC<Props> = ({ dark, searchOpen, searchRef })
       className={`absolute right-0 top-full mt-2 w-full md:w-96 rounded-xl shadow-2xl overflow-hidden transition-all duration-300
         ${dark ? "bg-gray-900 border border-gray-800" : "bg-white border border-gray-200"}`}
     >
-      {/* Search Input */}
+      
       <div className={`relative p-3 border-b ${dark ? "border-gray-800" : "border-gray-200"}`}>
         <div className="relative">
           <Search
@@ -69,7 +69,6 @@ export const SearchDropdown: React.FC<Props> = ({ dark, searchOpen, searchRef })
         </div>
       </div>
 
-      {/* Search Results */}
       <div className="max-h-96 overflow-y-auto">
         {data?.pages.flatMap((page) => page.products).length ? (
           <>

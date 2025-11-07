@@ -14,7 +14,7 @@ interface Props {
 export const DesktopMenu: React.FC<Props> = ({ dark, setSearchOpen, searchRef }) => {
   return (
     <div className="hidden md:flex items-center gap-6 relative">
-      {/* Products Link */}
+      
       <Link
         href="/products"
         className={`text-sm font-medium transition-all duration-300 relative group ${
@@ -29,7 +29,6 @@ export const DesktopMenu: React.FC<Props> = ({ dark, setSearchOpen, searchRef })
         />
       </Link>
 
-      {/* Sign In Button */}
       <Button
         variant="default"
         className={`text-sm px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 ${
@@ -41,10 +40,8 @@ export const DesktopMenu: React.FC<Props> = ({ dark, setSearchOpen, searchRef })
         Sign In
       </Button>
 
-      {/* Theme Toggle */}
       <ThemeToggle dark={dark} />
 
-      {/* Search Button */}
       <div ref={searchRef} className="relative">
         <Button
           variant="ghost"
