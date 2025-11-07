@@ -69,7 +69,7 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
-        {/* Logo */}
+        
         <Link href="/" className="flex items-center gap-2">
           <div
             className={`p-2 rounded-lg transition-all duration-300 ${
@@ -81,7 +81,7 @@ export default function Navbar() {
           <h1 className={`text-2xl font-bold ${dark ? "text-white" : "text-gray-900"}`}>ShopEase</h1>
         </Link>
 
-        {/* Desktop Menu */}
+       
         <div className="hidden md:flex items-center gap-6">
           <Link
             href="/products"
@@ -92,7 +92,7 @@ export default function Navbar() {
             Products
           </Link>
 
-          {/* Search */}
+          
           <Button
             ref={searchButtonRef}
             variant="ghost"
@@ -106,7 +106,7 @@ export default function Navbar() {
 
           <ThemeToggle dark={dark} />
 
-          {/* Favorites */}
+          
           <Sheet>
             <SheetTrigger asChild>
               <Button
@@ -163,7 +163,7 @@ export default function Navbar() {
             </SheetContent>
           </Sheet>
 
-          {/* Auth */}
+        
           {auth.token ? (
             <div className="flex items-center gap-2">
               <span className={`${dark ? "text-neutral-300" : "text-gray-700"} text-sm font-medium`}>
@@ -186,7 +186,7 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile */}
+        
         <div className="flex md:hidden items-center gap-2">
           <Button
             ref={searchButtonRef}
@@ -213,7 +213,7 @@ export default function Navbar() {
 
       <MobileMenu setMenuOpen={setMenuOpen} dark={dark} menuOpen={menuOpen} />
 
-      {/* Search Dropdown */}
+      
       {searchOpen && (
         <div ref={searchRef} className="absolute right-0 w-full px-4 md:px-0 md:w-auto md:right-20 z-50">
           <SearchDropdown searchOpen dark={dark} searchRef={searchRef} />

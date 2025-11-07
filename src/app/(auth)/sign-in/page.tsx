@@ -79,13 +79,13 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className={`${dark ? "bg-black text-white" : "bg-white text-gray-900"} min-h-screen flex flex-col justify-center items-center px-4`}>
-      {/* Logo & Intro */}
+    
       <div className="text-center mb-8">
         <Link href="/" className="flex items-center justify-center gap-2 mb-2">
           <div className={`${dark ? "bg-neutral-800" : "bg-gray-200"} p-2.5 rounded-xl`}>
             <ShoppingBag className={`${dark ? "text-white" : "text-gray-900"} w-6 h-6`} />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight">{/* dark handled via parent */}
+          <h1 className="text-3xl font-extrabold tracking-tight">
             ShopEase
           </h1>
         </Link>
@@ -94,7 +94,6 @@ const LoginPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Card */}
       <Card className={`${dark ? "bg-neutral-900 text-white" : "bg-white text-gray-900"} w-full max-w-md shadow-lg`}>
         <CardHeader>
           <CardTitle className="text-2xl">Sign In</CardTitle>
@@ -104,7 +103,7 @@ const LoginPage: React.FC = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Email */}
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -121,7 +120,6 @@ const LoginPage: React.FC = () => {
               {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
             </div>
 
-            {/* Password */}
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
@@ -146,7 +144,6 @@ const LoginPage: React.FC = () => {
               {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
             </div>
 
-            {/* Submit */}
             <Button
               type="submit"
               disabled={isSubmitting}

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 type AuthState = { token?: string | null; user?: { name?: string; email?: string } }
 
-// ✅ Load initial state from localStorage if available
+//initiate localstorage
 const storedAuth = typeof window !== 'undefined' ? localStorage.getItem('auth') : null
 const initialState: AuthState = storedAuth ? JSON.parse(storedAuth) : { token: null, user: undefined }
 
