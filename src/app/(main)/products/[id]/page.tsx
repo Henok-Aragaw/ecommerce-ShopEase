@@ -330,7 +330,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
                     key={idx}
                     className={`w-24 h-24 rounded-md cursor-pointer overflow-hidden border-2 ${
                       mainImage === img
-                        ? "border-indigo-500"
+                        ? "border-neutral-500"
                         : dark
                         ? "border-gray-700"
                         : "border-gray-200"
