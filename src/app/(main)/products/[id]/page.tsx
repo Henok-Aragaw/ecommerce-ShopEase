@@ -434,14 +434,14 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
             </div>
 
             <div className="mt-6">
-              <button
+              <Button
                 onClick={() => dispatch(toggleFavorite(product))}
-                className={`w-full flex items-center justify-center gap-2 font-bold py-3 px-6 rounded-lg shadow-md transition-colors duration-300 text-lg ${
+                className={`w-full flex items-center justify-center gap-2 font-bold p-6 cursor-pointer rounded-lg shadow-md transition-colors duration-300 text-lg ${
                   isFavorite
                     ? "bg-red-600 text-white hover:bg-red-700"
                     : dark
-                    ? "bg-indigo-700 text-white hover:bg-indigo-600"
-                    : "bg-indigo-600 text-white hover:bg-indigo-700"
+                    ? "bg-neutral-700 text-white hover:neutral-600"
+                    : "bg-neutral-600 text-white hover:bg-neutral-700"
                 }`}
               >
                 <Heart
@@ -450,7 +450,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
                   }`}
                 />
                 {isFavorite ? "Added to Favorites" : "Add to Favorites"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
