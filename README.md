@@ -73,7 +73,7 @@ A modern eCommerce web application** built with **Next.js App Router**, **TypeSc
 - Smooth, consistent, flicker-free theme transitions
 
 ### 🔐 Authentication
-- Mock authentication flow under `/auth/sign-in`
+- Mock authentication flow under `/sign-in`
 - Managed via **Redux Toolkit**
 - Simulates login/logout behavior locally
 - Provides gated access to certain pages
