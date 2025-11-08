@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { toast } from "sonner";
 import { Trash } from "lucide-react";
 import { useSelector } from "react-redux";
@@ -40,6 +39,16 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,6 +59,7 @@ export default function ProductsList() {
   const dark = useSelector((state: RootState) => state.theme.dark);
 
   const [query, setQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [openDialog, setOpenDialog] = useState(false);
   const [localProducts, setLocalProducts] = useState<Product[]>([]);
   const [deletedProductIds, setDeletedProductIds] = useState<number[]>([]);
@@ -63,14 +73,18 @@ export default function ProductsList() {
   });
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
-  const { data, fetchNextPage, hasNextPage, isError, isLoading } = useProducts(query);
+  const { data, isError, isLoading } = useProducts(query, currentPage);
   const createProductMutation = useCreateProduct();
 
-  const allProducts: Product[] = data?.pages.flatMap((page) => page.products) || [];
+  const allProducts: Product[] = data?.products || [];
   const displayedProducts = [
     ...localProducts,
     ...allProducts.filter((p) => !deletedProductIds.includes(p.id ?? 0)),
   ];
+
+  const totalProducts = data?.total || 0;
+  const limit = data?.limit || 10;
+  const totalPages = Math.ceil(totalProducts / limit);
 
   const handleCreateProduct = async () => {
     if (!newProduct.title || !newProduct.description || !newProduct.category || !newProduct.price) {
@@ -103,6 +117,10 @@ export default function ProductsList() {
     setProductToDelete(null);
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const renderSkeletons = (count: number) => {
     return Array.from({ length: count }).map((_, id) => (
@@ -126,6 +144,92 @@ export default function ProductsList() {
     ));
   };
 
+  const renderPaginationItems = () => {
+    const items = [];
+    const maxVisible = 5;
+    
+    if (totalPages <= maxVisible) {
+      // Show all pages if total is small
+      for (let i = 1; i <= totalPages; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+              onClick={() => handlePageChange(i)}
+              isActive={currentPage === i}
+              className="cursor-pointer"
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+    } else {
+      // Show first page
+      items.push(
+        <PaginationItem key={1}>
+          <PaginationLink
+            onClick={() => handlePageChange(1)}
+            isActive={currentPage === 1}
+            className="cursor-pointer"
+          >
+            1
+          </PaginationLink>
+        </PaginationItem>
+      );
+
+      // Show ellipsis if current page is far from start
+      if (currentPage > 3) {
+        items.push(
+          <PaginationItem key="ellipsis-start">
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+
+      // Show pages around current page
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      
+      for (let i = start; i <= end; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+              onClick={() => handlePageChange(i)}
+              isActive={currentPage === i}
+              className="cursor-pointer"
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+
+      // Show ellipsis if current page is far from end
+      if (currentPage < totalPages - 2) {
+        items.push(
+          <PaginationItem key="ellipsis-end">
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+
+      // Show last page
+      items.push(
+        <PaginationItem key={totalPages}>
+          <PaginationLink
+            onClick={() => handlePageChange(totalPages)}
+            isActive={currentPage === totalPages}
+            className="cursor-pointer"
+          >
+            {totalPages}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    return items;
+  };
+
   return (
     <div
       className={`min-h-screen ${
@@ -139,7 +243,10 @@ export default function ProductsList() {
             type="text"
             placeholder="Search products..."
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setCurrentPage(1); // Reset to page 1 on search
+            }}
             className={`w-full sm:max-w-md p-2 rounded-md ${
               dark
                 ? "bg-gray-800 text-white placeholder-gray-400 border-gray-700 focus:ring-blue-500"
@@ -239,21 +346,7 @@ export default function ProductsList() {
             <p>No products found.</p>
           </div>
         ) : (
-          <InfiniteScroll
-            dataLength={displayedProducts.length}
-            next={fetchNextPage}
-            hasMore={!!hasNextPage}
-            loader={
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
-                {renderSkeletons(4)}
-              </div>
-            }
-            endMessage={
-              <p className="text-center py-4 text-gray-500">
-                No more products
-              </p>
-            }
-          >
+          <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {displayedProducts.map((product) => (
                 <div key={product.id} className="relative group">
@@ -284,11 +377,11 @@ export default function ProductsList() {
                         </AlertDialogHeader>
                         <div className="flex justify-end gap-2 mt-4">
                           <AlertDialogCancel
-                            className={ `cursor-pointer
+                            className={`cursor-pointer ${
                               dark
                                 ? "bg-gray-700 text-white hover:bg-gray-600"
-                                : "" `
-                            }
+                                : ""
+                            }`}
                             onClick={() => setProductToDelete(null)}
                           >
                             Cancel
@@ -349,7 +442,36 @@ export default function ProductsList() {
                 </div>
               ))}
             </div>
-          </InfiniteScroll>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-8 flex justify-center">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                        className={`cursor-pointer ${
+                          currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                        }`}
+                      />
+                    </PaginationItem>
+                    
+                    {renderPaginationItems()}
+                    
+                    <PaginationItem>
+                      <PaginationNext
+                        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                        className={`cursor-pointer ${
+                          currentPage === totalPages ? "pointer-events-none opacity-50" : ""
+                        }`}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

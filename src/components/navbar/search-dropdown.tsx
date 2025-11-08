@@ -15,9 +15,14 @@ interface Props {
 export const SearchDropdown: React.FC<Props> = ({ dark, searchOpen, searchRef }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [page, setPage] = useState(1);
 
-  const handleSearch = debounce((q: string) => setDebouncedQuery(q), 300);
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useProducts(debouncedQuery);
+  const handleSearch = debounce((q: string) => {
+    setDebouncedQuery(q);
+    setPage(1); // Reset to page 1 on new search
+  }, 300);
+
+  const { data, isLoading } = useProducts(debouncedQuery, page);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -27,9 +32,17 @@ export const SearchDropdown: React.FC<Props> = ({ dark, searchOpen, searchRef })
   const clearSearch = () => {
     setSearchQuery("");
     setDebouncedQuery("");
+    setPage(1);
+  };
+
+  const handleLoadMore = () => {
+    setPage((prev) => prev + 1);
   };
 
   if (!searchOpen) return null;
+
+  const products = data?.products || [];
+  const hasMore = data ? (data.skip + data.limit) < data.total : false;
 
   return (
     <div
@@ -70,32 +83,36 @@ export const SearchDropdown: React.FC<Props> = ({ dark, searchOpen, searchRef })
       </div>
 
       <div className="max-h-96 overflow-y-auto">
-        {data?.pages.flatMap((page) => page.products).length ? (
+        {isLoading && page === 1 ? (
+          <div className="px-4 py-8 text-center">
+            <div className={`text-sm ${dark ? "text-gray-400" : "text-gray-500"}`}>
+              Searching...
+            </div>
+          </div>
+        ) : products.length > 0 ? (
           <>
-            {data.pages.flatMap((page) =>
-              page.products.map((product) => (
-                <Link
-                  key={product.id}
-                  href={`/products/${product.id}`}
-                  className={`flex items-center gap-3 px-4 py-3 border-b transition-colors
-                    ${dark ? "border-gray-800 hover:bg-gray-800 text-gray-100" : "border-gray-100 hover:bg-gray-50 text-gray-900"}`}
-                >
-                  <TrendingUp
-                    className="w-4 h-4"
-                    stroke={dark ? "#60A5FA" : "#2563EB"} 
-                  />
-                  <span className="text-sm font-medium">{product.title}</span>
-                </Link>
-              ))
-            )}
-            {hasNextPage && (
+            {products.map((product) => (
+              <Link
+                key={product.id}
+                href={`/products/${product.id}`}
+                className={`flex items-center gap-3 px-4 py-3 border-b transition-colors
+                  ${dark ? "border-gray-800 hover:bg-gray-800 text-gray-100" : "border-gray-100 hover:bg-gray-50 text-gray-900"}`}
+              >
+                <TrendingUp
+                  className="w-4 h-4"
+                  stroke={dark ? "#60A5FA" : "#2563EB"} 
+                />
+                <span className="text-sm font-medium">{product.title}</span>
+              </Link>
+            ))}
+            {hasMore && (
               <button
-                onClick={() => fetchNextPage()}
-                disabled={isFetchingNextPage}
+                onClick={handleLoadMore}
+                disabled={isLoading}
                 className={`w-full py-3 text-sm font-medium
                   ${dark ? "text-blue-400 hover:bg-gray-800 disabled:text-gray-600" : "text-blue-600 hover:bg-gray-50 disabled:text-gray-400"}`}
               >
-                {isFetchingNextPage ? "Loading..." : "Load more results"}
+                {isLoading ? "Loading..." : "Load more results"}
               </button>
             )}
           </>
