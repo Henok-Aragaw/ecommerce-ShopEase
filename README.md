@@ -23,7 +23,7 @@ A modern eCommerce web application** built with **Next.js App Router**, **TypeSc
 ### 🏠 Product Listing Page (`/products`)
 - Fetches data from [DummyJSON API](https://dummyjson.com/products)
 - Displays each product’s **title**, **price**, **rating**, **category**, and **thumbnail**
-- Implements **infinite scroll** for smooth, lazy-loaded browsing (`?limit=10&skip=10`)
+- Implements **Pagination** for smooth, lazy-loaded browsing (`?limit=10&skip=10`)
 - Includes a responsive **search bar**
 - Fully interactive with **local CRUD operations** (create, edit, delete)
 - Uses **React Query + Axios** for cached, efficient data fetching
@@ -162,7 +162,7 @@ src/
 - Global state with **Redux Toolkit**
 - Local product CRUD handling when API is read-only
 - Responsive layout using **Tailwind CSS**
-- **Infinite scroll** UX for large datasets
+- **Pagination** UX for large datasets
 - Theme toggling via Redux and persisted state
 - Dialogs and drawers powered by **Shadcn UI**
 - Type-safe development with **TypeScript**
@@ -175,12 +175,10 @@ src/
 ### 1️⃣ Clone the Repository
 ```bash
 git clone https://github.com/Henok-Aragaw/ecommerce-ShopEase.git
-cd nextjs-ecommerce-app
+cd ecommerce-ShopEase
 
-npm install
-# or
-yarn install
+pnpm install
 
-NEXT_PUBLIC_API_URL=""
+NEXT_PUBLIC_API_URL=" "
 
-npm run dev
+pnpm run dev
