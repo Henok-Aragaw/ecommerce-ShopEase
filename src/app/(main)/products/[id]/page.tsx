@@ -213,9 +213,9 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
               <Button
                 variant="outline"
                 size="sm"
-                className={`flex items-center gap-2 border ${
+                className={`flex items-center gap-2 border cursor-pointer ${
                   dark
-                    ? "border-gray-600 bg-neutral-800 text-white hover:bg-neutral-700"
+                    ? "border-gray-600 bg-neutral-800 text-white hover:bg-neutral-700 hover:text-white"
                     : "border-gray-300 text-gray-800 hover:bg-gray-100"
                 }`}
               >
