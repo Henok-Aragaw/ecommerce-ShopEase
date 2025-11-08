@@ -14,7 +14,7 @@ A modern eCommerce web application** built with **Next.js App Router**, **TypeSc
 - **State Management:** [Redux Toolkit](https://redux-toolkit.js.org/)
 - **Data Fetching:** [React Query](https://tanstack.com/query/latest)
 - **HTTP Client:** [Axios](https://axios-http.com/)
-- **Notifications:** [Sonner](https://sonner.emilkowal.ski/)
+- **Notifications:** [Sonner](https://ui.shadcn.com/docs/components/sonner)
 - **Fake API:** [DummyJSON](https://dummyjson.com/)
 - **Unique IDs:** [UUID](https://www.npmjs.com/package/uuid)
 
@@ -37,7 +37,7 @@ A modern eCommerce web application** built with **Next.js App Router**, **TypeSc
 
 ### ❤️ Favorites (Sheet Drawer)
 - Favorites feature built using **Shadcn Sheet component**
-- Opens as a **slide-in drawer** — no separate `/favorites` route
+- Opens as a **slide-in drawer** no separate `/favorites` route
 - Allows users to **favorite/unfavorite** instantly
 - Managed globally via **Redux Toolkit**
 - Favorites state persisted locally for reliability
