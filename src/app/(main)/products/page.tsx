@@ -260,12 +260,12 @@ export default function ProductsList() {
 
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <button
-                        className="absolute top-2 left-2 z-10 bg-white rounded-full p-1 shadow-md opacity-0 group-hover:opacity-100 transition-opacity dark:bg-gray-700"
+                      <Button
+                        className="absolute top-2 left-2 z-10 bg-white rounded-full p-1 shadow-md opacity-80 group-hover:opacity-100 transition-opacity dark:bg-neutral-700 cursor-pointer"
                         onClick={() => setProductToDelete(product)}
                       >
                         <Trash className="w-4 h-4 text-red-600" />
-                      </button>
+                      </Button>
                     </AlertDialogTrigger>
                     {productToDelete?.id === product.id && (
                       <AlertDialogContent
@@ -284,10 +284,10 @@ export default function ProductsList() {
                         </AlertDialogHeader>
                         <div className="flex justify-end gap-2 mt-4">
                           <AlertDialogCancel
-                            className={
+                            className={ `cursor-pointer
                               dark
                                 ? "bg-gray-700 text-white hover:bg-gray-600"
-                                : ""
+                                : "" `
                             }
                             onClick={() => setProductToDelete(null)}
                           >
@@ -295,7 +295,7 @@ export default function ProductsList() {
                           </AlertDialogCancel>
                           <AlertDialogAction
                             onClick={() => handleDeleteProduct(product)}
-                            className="bg-red-600 text-white hover:bg-red-700"
+                            className="bg-red-600 text-white hover:bg-red-700 cursor-pointer"
                           >
                             Delete
                           </AlertDialogAction>
