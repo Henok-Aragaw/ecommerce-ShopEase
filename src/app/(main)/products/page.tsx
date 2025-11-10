@@ -25,7 +25,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
 
@@ -57,12 +56,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductsList() {
   const dark = useSelector((state: RootState) => state.theme.dark);
+  const auth = useSelector((state: RootState) => state.auth);
 
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [openDialog, setOpenDialog] = useState(false);
   const [localProducts, setLocalProducts] = useState<Product[]>([]);
   const [deletedProductIds, setDeletedProductIds] = useState<number[]>([]);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [newProduct, setNewProduct] = useState<Partial<Product>>({
     title: "",
     description: "",
@@ -71,7 +72,6 @@ export default function ProductsList() {
     rating: 0,
     thumbnail: "",
   });
-  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
   const { data, isError, isLoading } = useProducts(query, currentPage);
   const createProductMutation = useCreateProduct();
@@ -86,28 +86,67 @@ export default function ProductsList() {
   const limit = data?.limit || 10;
   const totalPages = Math.ceil(totalProducts / limit);
 
+  //Add product
   const handleCreateProduct = async () => {
-    if (!newProduct.title || !newProduct.description || !newProduct.category || !newProduct.price) {
+    if (!auth.token) {
+      toast.error("You must be signed in to add a product.");
+      return;
+    }
+
+    if (
+      !newProduct.title ||
+      !newProduct.description ||
+      !newProduct.category ||
+      !newProduct.price
+    ) {
       toast.error("Please fill in all required fields.");
       return;
     }
+
     try {
-      const createdProduct = await createProductMutation.mutateAsync(newProduct as Product);
+      const createdProduct = await createProductMutation.mutateAsync(
+        newProduct as Product
+      );
       const productWithId: Product = {
         ...createdProduct,
-        id: typeof createdProduct.id === "number" ? createdProduct.id : Date.now(),
+        id:
+          typeof createdProduct.id === "number"
+            ? createdProduct.id
+            : Date.now(),
       };
       toast.success("Product added successfully!");
       setLocalProducts((prev) => [productWithId, ...prev]);
       setOpenDialog(false);
-      setNewProduct({ title: "", description: "", category: "", price: 0, rating: 0, thumbnail: "" });
+      setNewProduct({
+        title: "",
+        description: "",
+        category: "",
+        price: 0,
+        rating: 0,
+        thumbnail: "",
+      });
     } catch (error) {
       toast.error("Failed to add product.");
       console.error(error);
     }
   };
 
+  const handleOpenDialog = () => {
+    if (!auth.token) {
+      toast.error("You must be signed in to add a product.");
+      return;
+    }
+    setOpenDialog(true);
+  };
+
+  //Delete product (with auth check)
   const handleDeleteProduct = (product: Product) => {
+    if (!auth.token) {
+      toast.error("You must be signed in to delete a product.");
+      setProductToDelete(null);
+      return;
+    }
+
     if (localProducts.find((p) => p.id === product.id)) {
       setLocalProducts((prev) => prev.filter((p) => p.id !== product.id));
     } else {
@@ -122,9 +161,15 @@ export default function ProductsList() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const renderSkeletons = (count: number) => {
-    return Array.from({ length: count }).map((_, id) => (
-      <Card key={id} className={`overflow-hidden flex flex-col h-full animate-pulse ${dark ? "bg-neutral-900" : "bg-gray-100"}`}>
+  //Skeleton loading
+  const renderSkeletons = (count: number) =>
+    Array.from({ length: count }).map((_, id) => (
+      <Card
+        key={id}
+        className={`overflow-hidden flex flex-col h-full animate-pulse ${
+          dark ? "bg-neutral-900" : "bg-gray-100"
+        }`}
+      >
         <CardHeader className="p-0">
           <Skeleton className="h-40 w-full" />
         </CardHeader>
@@ -142,14 +187,13 @@ export default function ProductsList() {
         </div>
       </Card>
     ));
-  };
 
+  //Pagination items
   const renderPaginationItems = () => {
     const items = [];
     const maxVisible = 5;
-    
+
     if (totalPages <= maxVisible) {
-      // Show all pages if total is small
       for (let i = 1; i <= totalPages; i++) {
         items.push(
           <PaginationItem key={i}>
@@ -164,7 +208,6 @@ export default function ProductsList() {
         );
       }
     } else {
-      // Show first page
       items.push(
         <PaginationItem key={1}>
           <PaginationLink
@@ -177,19 +220,16 @@ export default function ProductsList() {
         </PaginationItem>
       );
 
-      // Show ellipsis if current page is far from start
-      if (currentPage > 3) {
+      if (currentPage > 3)
         items.push(
           <PaginationItem key="ellipsis-start">
             <PaginationEllipsis />
           </PaginationItem>
         );
-      }
 
-      // Show pages around current page
       const start = Math.max(2, currentPage - 1);
       const end = Math.min(totalPages - 1, currentPage + 1);
-      
+
       for (let i = start; i <= end; i++) {
         items.push(
           <PaginationItem key={i}>
@@ -204,16 +244,13 @@ export default function ProductsList() {
         );
       }
 
-      // Show ellipsis if current page is far from end
-      if (currentPage < totalPages - 2) {
+      if (currentPage < totalPages - 2)
         items.push(
           <PaginationItem key="ellipsis-end">
             <PaginationEllipsis />
           </PaginationItem>
         );
-      }
 
-      // Show last page
       items.push(
         <PaginationItem key={totalPages}>
           <PaginationLink
@@ -237,7 +274,7 @@ export default function ProductsList() {
       } transition-colors duration-300`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-8">
-
+        {/* 🔍 Search & Add */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <Input
             type="text"
@@ -245,7 +282,7 @@ export default function ProductsList() {
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
-              setCurrentPage(1); // Reset to page 1 on search
+              setCurrentPage(1);
             }}
             className={`w-full sm:max-w-md p-2 rounded-md ${
               dark
@@ -254,12 +291,15 @@ export default function ProductsList() {
             }`}
           />
 
+          <Button
+            onClick={handleOpenDialog}
+            className="bg-green-600 text-white hover:bg-green-700"
+          >
+            Add Product
+          </Button>
+
+          {/*Add Product Dialog */}
           <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-            <DialogTrigger asChild>
-              <Button className="bg-green-600 text-white hover:bg-green-700">
-                Add Product
-              </Button>
-            </DialogTrigger>
             <DialogContent
               className={`sm:max-w-lg ${
                 dark ? "bg-neutral-900 text-white border border-gray-700" : ""
@@ -268,6 +308,7 @@ export default function ProductsList() {
               <DialogHeader>
                 <DialogTitle>Add New Product</DialogTitle>
               </DialogHeader>
+
               <div className="grid gap-4 py-4">
                 {["title", "description", "category", "price", "thumbnail"].map(
                   (field) => (
@@ -276,11 +317,7 @@ export default function ProductsList() {
                         {field.charAt(0).toUpperCase() + field.slice(1)}
                       </Label>
                       <Input
-                        type={
-                          field === "price" || field === "rating"
-                            ? "number"
-                            : "text"
-                        }
+                        type={field === "price" ? "number" : "text"}
                         value={newProduct[field as keyof Partial<Product>] || ""}
                         onChange={(e) =>
                           setNewProduct({
@@ -301,6 +338,7 @@ export default function ProductsList() {
                   )
                 )}
               </div>
+
               <DialogFooter className="flex justify-end gap-2">
                 <Button
                   variant="outline"
@@ -325,6 +363,7 @@ export default function ProductsList() {
           </Dialog>
         </div>
 
+        {/*Main Grid */}
         {isError ? (
           <div
             className={`flex items-center justify-center text-center py-20 rounded-lg ${
@@ -350,7 +389,6 @@ export default function ProductsList() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {displayedProducts.map((product) => (
                 <div key={product.id} className="relative group">
-
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
@@ -360,6 +398,7 @@ export default function ProductsList() {
                         <Trash className="w-4 h-4 text-red-600" />
                       </Button>
                     </AlertDialogTrigger>
+
                     {productToDelete?.id === product.id && (
                       <AlertDialogContent
                         className={
@@ -369,12 +408,14 @@ export default function ProductsList() {
                         }
                       >
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Product?</AlertDialogTitle>
+                          <AlertDialogTitle>
+                            Delete Product?
+                          </AlertDialogTitle>
                           <p>
-                            Are you sure you want to delete &quot;
-                            {product.title}&quot;?
+                            Are you sure you want to delete “{product.title}”?
                           </p>
                         </AlertDialogHeader>
+
                         <div className="flex justify-end gap-2 mt-4">
                           <AlertDialogCancel
                             className={`cursor-pointer ${
@@ -386,6 +427,7 @@ export default function ProductsList() {
                           >
                             Cancel
                           </AlertDialogCancel>
+
                           <AlertDialogAction
                             onClick={() => handleDeleteProduct(product)}
                             className="bg-red-600 text-white hover:bg-red-700 cursor-pointer"
@@ -443,27 +485,37 @@ export default function ProductsList() {
               ))}
             </div>
 
-            {/* Pagination */}
+            {/*Pagination */}
             {totalPages > 1 && (
               <div className="mt-8 flex justify-center">
                 <Pagination>
                   <PaginationContent>
                     <PaginationItem>
                       <PaginationPrevious
-                        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                        onClick={() =>
+                          handlePageChange(Math.max(1, currentPage - 1))
+                        }
                         className={`cursor-pointer ${
-                          currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                          currentPage === 1
+                            ? "pointer-events-none opacity-50"
+                            : ""
                         }`}
                       />
                     </PaginationItem>
-                    
+
                     {renderPaginationItems()}
-                    
+
                     <PaginationItem>
                       <PaginationNext
-                        onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                        onClick={() =>
+                          handlePageChange(
+                            Math.min(totalPages, currentPage + 1)
+                          )
+                        }
                         className={`cursor-pointer ${
-                          currentPage === totalPages ? "pointer-events-none opacity-50" : ""
+                          currentPage === totalPages
+                            ? "pointer-events-none opacity-50"
+                            : ""
                         }`}
                       />
                     </PaginationItem>
