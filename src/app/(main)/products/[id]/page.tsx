@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useProduct } from "@/hooks/use-product";
 import type { Product } from "@/types/product";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -28,12 +28,19 @@ interface ProductDetailPageProps {
   localProducts?: Product[];
 }
 
-export default function ProductDetailPage({ localProducts = [] }: ProductDetailPageProps) {
+export default function ProductDetailPage({
+  localProducts = [],
+}: ProductDetailPageProps) {
   const params = useParams();
+  const router = useRouter();
   const id = Array.isArray(params?.id) ? params.id[0] : params?.id;
 
   const dark = useSelector((state: RootState) => state.theme.dark);
-  const { data: productFromHook, isLoading, isError } = useProduct(id, localProducts);
+  const auth = useSelector((state: RootState) => state.auth);
+  const { data: productFromHook, isLoading, isError } = useProduct(
+    id,
+    localProducts
+  );
   const dispatch = useDispatch();
   const favorites = useSelector((state: RootState) => state.favorites.items);
 
@@ -75,7 +82,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
     );
   }
 
-  // Skeleton loading
+  //Skeleton loading
   if (isLoading || !product) {
     return (
       <div
@@ -127,6 +134,16 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
     }));
   };
 
+  //Require login before edit
+  const handleEditClick = () => {
+    if (!auth?.token) {
+      toast.error("You must sign in to edit products.");
+      router.push("/sign-in");
+      return;
+    }
+    setOpen(true);
+  };
+
   const handleUpdate = () => {
     if (!product) return;
 
@@ -158,6 +175,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
 
   return (
     <div className={`${dark ? "bg-black text-white" : "bg-white text-gray-900"}`}>
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-6">
         <nav
           className="flex items-center text-sm flex-wrap gap-2"
@@ -180,7 +198,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
           />
           <BreadcrumbItem>
             <BreadcrumbLink
-              href={`/products/`}
+              href={`/products`}
               className={`transition-colors capitalize ${
                 dark
                   ? "text-gray-300 hover:text-white"
@@ -206,13 +224,16 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
         </nav>
       </div>
 
+      {/* 🖼 Product Detail */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Edit Button */}
         <div className="flex justify-end mb-4 pt-12">
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button
                 variant="outline"
                 size="sm"
+                onClick={handleEditClick}
                 className={`flex items-center gap-2 border cursor-pointer ${
                   dark
                     ? "border-gray-600 bg-neutral-800 text-white hover:bg-neutral-700 hover:text-white"
@@ -223,6 +244,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
               </Button>
             </DialogTrigger>
 
+            {/* Edit Modal */}
             <DialogContent
               className={`sm:max-w-lg w-full max-h-[90vh] overflow-y-auto rounded-2xl border p-6 ${
                 dark
@@ -310,6 +332,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
           </Dialog>
         </div>
 
+        {/* Main Product Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
           {/* Images */}
           <div className="flex flex-col gap-4">
@@ -350,6 +373,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
             )}
           </div>
 
+          {/* Details */}
           <div className="flex flex-col gap-6">
             <div>
               <p
@@ -442,7 +466,7 @@ export default function ProductDetailPage({ localProducts = [] }: ProductDetailP
                   isFavorite
                     ? "bg-red-600 text-white hover:bg-red-700"
                     : dark
-                    ? "bg-neutral-700 text-white hover:neutral-600"
+                    ? "bg-neutral-700 text-white hover:bg-neutral-600"
                     : "bg-neutral-600 text-white hover:bg-neutral-700"
                 }`}
               >
